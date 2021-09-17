@@ -1,5 +1,6 @@
 import React from "react";
 import { makeStyles } from '@material-ui/core';
+import { postRate } from './Services';
 
 const useStyles = makeStyles(() => ({
    formContainer: {
@@ -79,10 +80,12 @@ const closeForm = () => {
     rateFormElement.setAttribute('style', 'visibility: hidden');
 };
 
-const submitRating = () => {
+const submitRating = (rate) => {
     closeForm(); // Close rating table
     const rateThankYouElement = document.getElementById('rateTY');
     rateThankYouElement.setAttribute('style', 'visibility: visible;');
+
+    postRate(rate);
 
     setTimeout(() => {
         const feedbackElement = document.getElementById('feedbackForm');
@@ -107,7 +110,7 @@ const RateForm = () => {
                             <div 
                                 key={r} 
                                 className={classes.rateNumber}
-                                onClick={() => submitRating()}
+                                onClick={() => submitRating(r)}
                             >
                                 {r}
                             </div>

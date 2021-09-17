@@ -46,10 +46,6 @@ const useStyles = makeStyles(() => ({
 }));
 
 const openRateForm = () => {
-   const smileyElement = document.getElementById('smiley');
-   smileyElement.setAttribute('style', 'visibility: hidden;');
-   const buttonElement = document.getElementById('button');
-   buttonElement.setAttribute('style', 'visibility: hidden;');
    const rateFormElement = document.getElementById('rateForm');
    rateFormElement.setAttribute(
       'style', 'opacity: 100; width: 90%; height: 300; visibility: visible;',
