@@ -34,7 +34,7 @@ const useStyles = makeStyles(() => ({
       backgroundColor: 'black',
       borderRadius: 60,
       height: 110,
-      width: 50,
+      width: 180,
       opacity: 0,
       visibility: 'hidden',
       '&:hover': {

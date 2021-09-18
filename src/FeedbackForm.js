@@ -1,6 +1,8 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { makeStyles } from '@material-ui/core';
-import { Formik, Form } from 'formik';
+import { Formik, Form, Field } from 'formik';
+import { getQuestions, postResponse } from './Services'
+import { TextField, Rating } from '@mui/material';
 
 const useStyles = makeStyles(() => ({
     feedbackContainer: {
@@ -76,33 +78,112 @@ const closeForm = () => {
     rateFormElement.setAttribute('style', 'visibility: hidden;');
 };
 
-const FeedbackField = ({
-    label, placeholder
-}) => {
+const fieldBaseOnType = (qns) => {
+    const { type, placeHolder } = qns;
+    switch (type) {
+        case 'short answer':
+        return (
+            <Field name={`${qns.question}`}
+                render={({ field }) => (
+                    <TextField 
+                        placeholder={placeHolder}
+                        multiline           
+                        {...field} 
+                    />
+                )}
+            />
+        )
+        case 'email':
+        return (
+            <Field 
+                render={({ field }) => (
+                    <div {...field}>
+                        <TextField
+                            name={`${qns.question}`}
+                            placeholder={placeHolder}
+                        />
+                    </div>
+                )}
+            />
+        )
+        case 'linear scale':
+        return (
+            <Field 
+                render={({ field }) => (
+                    <div {...field}>
+                        <Rating name={`${qns.question}`}/>
+                    </div>
+                )}
+            />
+        )
+    }
+}
+
+const FeedbackField = ({ qns }) => {
     const classes = useStyles();
     return (
         <div className={classes.formItem}>
-            <label className={classes.formTitle}>{label}</label>
-            <textarea 
-                placeholder={placeholder}
-            />
+            <label className={classes.formTitle}>{qns.question}</label>
+            {fieldBaseOnType(qns)}
         </div>
     )
 };
 
-const submitForm = () => {
+const processResponses = (responses) => {
+    const keyRes = Object.keys(responses);
+    const keyVal = Object.values(responses);
+
+    const mapRes = keyRes.map((keyR, idx) => ({
+        question: keyR,
+        answer: keyVal[idx],
+    }))
+
+    postResponse(mapRes);
+};
+
+const submitForm = (values) => {
     const fbThankYouElement = document.getElementById('feedbackTY');
     fbThankYouElement.setAttribute('style', 'visibility: visible;');
     const facebackElement = document.getElementById('feedbackForm');
     facebackElement.setAttribute('style', 'visibility: hidden;');
+
+    processResponses(values);
 
     setTimeout(() => {
         fbThankYouElement.setAttribute('style', 'visibility: hidden;');
     }, 2000);
 };
 
+const setInitialValues = (qns) => {
+    const obj = {};
+    qns.map((q) => {
+        if (qns.type === 'linear scale'){
+            obj[`${q.question}`] = 0;
+        } else {
+            obj[`${q.question}`] = '';
+        }
+    });
+    return obj;
+};
+
+const generateQuestions = (qns) => qns.map((q) => <FeedbackField key={q._id} qns={q} />);
+
 const FeedbackForm = () => {
     const classes = useStyles();
+    const [qns, setQns] = useState([]);
+
+    useEffect(() => {
+        const init = async () => {
+            // Fetch questions from DB
+            const questions = await getQuestions();
+            if (questions.length) {
+                setQns(questions);
+            }
+        }
+
+        init();
+    }, []);
+
     return (
         <div id="feedbackForm" className={classes.feedbackContainer}>
             <div className={classes.cross}>
@@ -111,31 +192,17 @@ const FeedbackForm = () => {
             <div className={classes.feedbackTitle}>Tell us more</div>
             <div>
                 <Formik
-                    initialValues={{ 
-                        most: '',
-                        least: '',
-                        email: '',
-                     }}
-                    onSubmit={() => submitForm()}
+                    initialValues={setInitialValues(qns)}
+                    onSubmit={(values, { setSubmitting }) => {
+                        setSubmitting(true);
+                        submitForm(values);
+                        setSubmitting(false);
+                    }}
                 >
-                {(props) => {
+                {() => {
                     return (
                     <Form className={classes.form}>
-                        <FeedbackField 
-                            name="most"
-                            label="What did you like most?"
-                            placeholder="Tell us your experience (optional)"
-                        />
-                         <FeedbackField 
-                            name="least"
-                            label="What did you like least?"
-                            placeholder="Let us know how we can improve (optional)"
-                        />
-                         <FeedbackField 
-                            name="email"
-                            label="Your email?"
-                            placeholder="Your email address (optional)"
-                        />
+                        {generateQuestions(qns)}
                         <div className={classes.buttonDiv}>
                             <button className={classes.formButton} type="submit">SUBMIT</button>
                         </div>
