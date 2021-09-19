@@ -4,10 +4,10 @@ import RateForm from './RateForm';
 import RateThankYouPage from './RateThankYouPage';
 import FeedbackForm from './FeedbackForm';
 import FeedbackThankYouPage from './FeedbackThankYouPage';
+import DIMENSION from "./config/dimension";
 
 const useStyles = makeStyles(() => ({
    mainContainer: {
-      backgroundColor: 'cyan',
       width: '100%',
       height: '100%',
    },
@@ -46,9 +46,24 @@ const useStyles = makeStyles(() => ({
 }));
 
 const openRateForm = () => {
+   // Hide smiley and button after entering rate form
+   const smileyElement = document.getElementById('smiley');
+   smileyElement.setAttribute('style', 'visibility: hidden;');
+   const buttonElement = document.getElementById('button');
+   buttonElement.setAttribute('style', 'visibility: hidden;');
+   
+   // Transition for rate form
    const rateFormElement = document.getElementById('rateForm');
    rateFormElement.setAttribute(
-      'style', 'opacity: 100; width: 90%; height: 300; visibility: visible;',
+      'style', `opacity: 100; width: ${DIMENSION.WIDTH}; height: 200px; visibility: visible; background-color: white; border-radius: 10px;`,
+   );
+   const rateTitleElement = document.getElementById('rateTitle');
+   rateTitleElement.setAttribute(
+      'style', 'transform: translateY(30px); opacity: 100;',
+   );
+   const rateContainerElement = document.getElementById('rateContainer');
+   rateContainerElement.setAttribute(
+      'style', 'transform: translateY(50px); opacity: 100;',
    );
 };
 

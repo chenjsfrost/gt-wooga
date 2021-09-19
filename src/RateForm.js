@@ -4,41 +4,40 @@ import { postRate } from './Services';
 
 const useStyles = makeStyles(() => ({
    formContainer: {
-        transition: 'visibility 0s, width .8s, height .8s, opacity .5s',
+        transition: 'visibility 0s, width 1s, height 1s, opacity .5s, background-color 1s, border-radius 1s',
         position: 'fixed',
         bottom: 0,
         margin: 10,
-        backgroundColor: 'white',
+        backgroundColor: 'black',
         opacity: 0,
         alignItems: 'center',
         flexDirection: 'column',
-        border: '1px solid white',
-        borderRadius: 30,
-        height: 200,
-        width: 50,
+        borderRadius: 60,
+        height: 110,
+        width: 180,
         visibility: 'hidden',
         display: 'flex',
    },
    cross: {
+        position: 'absolute',
         cursor: 'pointer',
         width: '100%',
         display: 'flex',
         justifyContent: 'flex-end',
         alignItems: 'center',
         height: 50,
-        marginRight: 20,
+        right: 10,
    },
    rateTitle: {
-        width: '100%',
-        textAlign: 'center',
         fontWeight: 'bold',
         fontSize: 25,
-        marginBottom: 10,
+        opacity: 0,
+        transition: 'transform .5s, opacity 3s',
    },
    rateContainer: {
-        width: '40%',
-        display: 'flex',
-        flexDirection: 'column',
+        width: '30%',
+        opacity: 0,
+        transition: 'transform 1s, opacity 2s',
    },
    rateTable: {
         width: '100%',
@@ -51,7 +50,9 @@ const useStyles = makeStyles(() => ({
         width: 30,
         height: 20,
         padding: 20,
-        border: '3px solid black',
+        borderLeft: '2px solid black',
+        borderTop: '2px solid black',
+        borderBottom: '2px solid black',
         textAlign: 'center',
         '&:hover': {
             backgroundColor: '#8e8e8d',
@@ -89,9 +90,25 @@ const submitRating = (rate) => {
 
     setTimeout(() => {
         const feedbackElement = document.getElementById('feedbackForm');
-        feedbackElement.setAttribute('style', 'width: 30%; opacity: 100; visibility: visible;');
+        feedbackElement.setAttribute('style', 'width: 30%; opacity: 100; height: 500px; visibility: visible;');
         rateThankYouElement.setAttribute('style', 'visibility: hidden;');
     }, 2000);
+};
+
+const condStyle = (idx, rating) => {
+    if (idx === 0) {
+        return {
+            borderTopLeftRadius: 10,
+            borderBottomLeftRadius: 10,
+        }
+    }
+    if (idx === rating.length - 1) {
+        return {
+            borderTopRightRadius: 10,
+            borderBottomRightRadius: 10,
+            borderRight: '2px solid black',
+        }
+    }
 };
 
 const RateForm = () => {
@@ -100,16 +117,17 @@ const RateForm = () => {
     return (
         <div id="rateForm" className={classes.formContainer}>
             <div className={classes.cross}>
-                <img width="30" height="30" src="assets/cross.png" onClick={() => closeForm()}/>
+                <img width="20" height="20" src="assets/cross.png" onClick={() => closeForm()}/>
             </div>
-            <div className={classes.rateTitle}>Rate your experience</div>
-            <div className={classes.rateContainer}>
+            <div id="rateTitle" className={classes.rateTitle}>Rate your experience</div>
+            <div id="rateContainer" className={classes.rateContainer}>
                 <div className={classes.rateTable}>
                     {
-                        rating.map((r) => (
+                        rating.map((r, idx) => (
                             <div 
                                 key={r} 
                                 className={classes.rateNumber}
+                                style={condStyle(idx, rating)}
                                 onClick={() => submitRating(r)}
                             >
                                 {r}

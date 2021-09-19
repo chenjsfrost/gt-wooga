@@ -3,16 +3,17 @@ import { makeStyles } from '@material-ui/core';
 import { Formik, Form, Field } from 'formik';
 import { getQuestions, postResponse } from './Services'
 import { TextField, Rating } from '@mui/material';
+import DIMENSION from './config/dimension';
 
 const useStyles = makeStyles(() => ({
     feedbackContainer: {
-        transition: 'visibility 0s, width .3s, opacity .5s',
-        position: 'absolute',
+        transition: 'visibility 0s, width 1s, height 1s, opacity .5s',
+        position: 'fixed',
         bottom: 0,
         backgroundColor: 'white',
         borderRadius: 10,
-        height: 500,
-        width: '90%',
+        height: 200,
+        width: '95%',
         marginLeft: 10,
         marginBottom: 10,
         opacity: 0,
@@ -43,11 +44,11 @@ const useStyles = makeStyles(() => ({
         borderTopRightRadius: 10,
     },
     form: {
-        display: 'flex',
-        flexDirection: 'column',
-        width: '90%',
+        width: '95%',
+        height: 400,
         marginTop: 30,
         marginLeft: 10,
+        overflow: 'auto',
     },
     formTitle: {
         fontWeight: 'bold',
@@ -78,35 +79,29 @@ const closeForm = () => {
     rateFormElement.setAttribute('style', 'visibility: hidden;');
 };
 
+const FIELD_TYPE = {
+    SHORT_ANSWER: 'short answer',
+    EMAIL: 'email',
+    LINEAR_SCALE: 'linear scale'
+}
+
 const fieldBaseOnType = (qns) => {
     const { type, placeHolder } = qns;
     switch (type) {
-        case 'short answer':
+        case FIELD_TYPE.SHORT_ANSWER:
+        case FIELD_TYPE.EMAIL:
         return (
             <Field name={`${qns.question}`}
                 render={({ field }) => (
                     <TextField 
                         placeholder={placeHolder}
-                        multiline           
+                        multiline={(type === FIELD_TYPE.SHORT_ANSWER ? true : false)}        
                         {...field} 
                     />
                 )}
             />
         )
-        case 'email':
-        return (
-            <Field 
-                render={({ field }) => (
-                    <div {...field}>
-                        <TextField
-                            name={`${qns.question}`}
-                            placeholder={placeHolder}
-                        />
-                    </div>
-                )}
-            />
-        )
-        case 'linear scale':
+        case FIELD_TYPE.LINEAR_SCALE:
         return (
             <Field 
                 render={({ field }) => (
@@ -116,6 +111,8 @@ const fieldBaseOnType = (qns) => {
                 )}
             />
         )
+        default:
+            // Do nothing
     }
 }
 
@@ -143,7 +140,7 @@ const processResponses = (responses) => {
 
 const submitForm = (values) => {
     const fbThankYouElement = document.getElementById('feedbackTY');
-    fbThankYouElement.setAttribute('style', 'visibility: visible;');
+    fbThankYouElement.setAttribute('style', `height: 200px; width: ${DIMENSION.WIDTH}; visibility: visible;`);
     const facebackElement = document.getElementById('feedbackForm');
     facebackElement.setAttribute('style', 'visibility: hidden;');
 

@@ -3,18 +3,18 @@ import { makeStyles } from '@material-ui/core';
 
 const useStyles = makeStyles(() => ({
     container: {
-         transition: 'visibility 0s',
+         transition: 'visibility 0s, height .5s, width .5s',
          position: 'fixed',
          bottom: 0,
          margin: 10,
          backgroundColor: 'white',
-         width: '90%',
-         height: 200,
+         width: '30%',
+         height: 500,
          alignItems: 'center',
          display: 'flex',
          flexDirection: 'column',
          border: '1px solid white',
-         borderRadius: 30,
+         borderRadius: 10,
          justifyContent: 'center',
          visibility: 'hidden',
     },

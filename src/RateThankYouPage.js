@@ -1,5 +1,6 @@
 import React from "react";
 import { makeStyles } from '@material-ui/core';
+import DIMENSION from "./config/dimension";
 
 const useStyles = makeStyles(() => ({
     container: {
@@ -8,12 +9,12 @@ const useStyles = makeStyles(() => ({
          bottom: 0,
          margin: 10,
          backgroundColor: 'white',
-         width: '90%',
+         width: DIMENSION.WIDTH,
          height: 200,
          alignItems: 'center',
          display: 'flex',
          border: '1px solid white',
-         borderRadius: 30,
+         borderRadius: 10,
          justifyContent: 'center',
          visibility: 'hidden',
     },
