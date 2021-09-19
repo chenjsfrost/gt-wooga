@@ -1,9 +1,10 @@
 import axios from "axios";
+import hostUrl from "./config/serviceConfig";
 axios.defaults.headers.post['Content-Type'] ='application/json;charset=utf-8';
 axios.defaults.headers.post['Access-Control-Allow-Origin'] = '*';
 
 const getQuestions = () => {
-    return axios.get('http://localhost:3031/questions', {}).then((response) => {
+    return axios.get(`${hostUrl}/questions`, {}).then((response) => {
         console.log('get question:', response);
         return response.data.data;
     }).catch((error) => {
@@ -12,7 +13,7 @@ const getQuestions = () => {
 };
 
 const postRate = (rate) => {
-    axios.post('http://localhost:3031/rates', { rate }).then((response) => {
+    axios.post(`${hostUrl}/rates`, { rate }).then((response) => {
         console.log('post rate:', response);
     }).catch((error) => {
         console.log('error:', error);
@@ -20,7 +21,7 @@ const postRate = (rate) => {
 };
 
 const postResponse = (response) => {
-    axios.post('http://localhost:3031/responses', { response }).then((response) => {
+    axios.post(`${hostUrl}/responses`, { response }).then((response) => {
         console.log('post response:', response);
     }).catch((error) => {
         console.log('error:', error);
